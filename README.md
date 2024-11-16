@@ -9,6 +9,9 @@ Secrets must be created during install.
 REQUIRED:
 
 ```shell
+helm repo add ijmacd https://ijmacd.github.io/bluesky-pds
+helm repo update ijmacd
+
 APPNAME="my-bsky"
 NAMESPACE="my-bsky"
 PDS_HOSTNAME="bsky.example.com"
@@ -17,17 +20,17 @@ PDS_ADMIN_PASSWORD=$(openssl rand --hex 16)
 PDS_JWT_SECRET=$(openssl rand --hex 16)
 PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX=$(openssl ecparam --name secp256k1 --genkey --noout --outform DER | tail --bytes=+8 | head --bytes=32 | xxd --plain --cols 32)
 
-kubectl create secret generic --namespace ${NAMESPACE} ${APPNAME}-pds \
-    --from-literal=adminPassword=${PDS_ADMIN_PASSWORD} \
-    --from-literal=jwtSecret=${PDS_JWT_SECRET} \
-    --from-literal=plcRotationKey=${PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX}
-
-helm upgrade ${APPNAME} bluesky-pds \
+helm upgrade ${APPNAME} ijmacd/bluesky-pds \
   --install \
   --namespace ${NAMESPACE} \
   --create-namespace \
   --set hostname=${PDS_HOSTNAME} \
   --set pds.secretsName=${APPNAME}-pds
+
+kubectl create secret generic --namespace ${NAMESPACE} ${APPNAME}-pds \
+    --from-literal=adminPassword=${PDS_ADMIN_PASSWORD} \
+    --from-literal=jwtSecret=${PDS_JWT_SECRET} \
+    --from-literal=plcRotationKey=${PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX}
 ```
 
 ## Usage
