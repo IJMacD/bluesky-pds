@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  bluesky-pds:
+  - apiVersion: v2
+    appVersion: "0.4"
+    created: "2024-11-16T13:39:53.840616859+08:00"
+    description: A helm chart for Bluesky PDS (Personal Data Server)
+    digest: e3e7ca2f4513265d5bc169418c5b26c5b6c0eb4c9cb27c264137dae2005ddebf
+    name: bluesky-pds
+    type: application
+    urls:
+    - bluesky-pds-1.0.0.tgz
+    version: 1.0.0
+generated: "2024-11-16T13:39:53.836510379+08:00"
