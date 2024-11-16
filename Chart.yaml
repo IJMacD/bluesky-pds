@@ -1,0 +1,6 @@
+apiVersion: v2
+description: A helm chart for Bluesky PDS (Personal Data Server)
+name: bluesky-pds
+type: application
+version: 1.0.0
+appVersion: "0.4"

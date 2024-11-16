@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-pds"
+  labels:
+    app.kubernetes.io/name: "{{ .Chart.Name }}"
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.Version }}"
+    app.kubernetes.io/component: pds
+  annotations:
+    {{- .Values.pds.ingress.annotations | toYaml | nindent 4 }}
+spec:
+  {{- if .Values.pds.ingress.ingressClass }}
+  ingressClass: {{ .Values.pds.ingress.ingressClass }}
+  {{- end }}
+  {{- if .Values.pds.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.hostname }}
+        - "*.{{ .Values.hostname }}"
+      secretName: "{{ .Release.Name }}-pds-tls"
+  {{- end }}
+  rules:
+    - host: {{ .Values.hostname }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: "{{ .Release.Name }}-pds"
+                port:
+                  number: 80
+    - host: "*.{{ .Values.hostname }}"
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: "{{ .Release.Name }}-pds"
+                port:
+                  number: 80

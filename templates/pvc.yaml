@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ .Release.Name }}-pds-data"
+spec:
+  {{- if .Values.pds.pvc.storageClass }}
+  storageClass: {{ .Values.pds.pvc.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.pds.pvc.storageRequest }}
+  accessModes:
+    {{- .Values.pds.pvc.accessModes | toYaml | nindent 4 }}
