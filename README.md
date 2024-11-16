@@ -2,38 +2,32 @@
 
 A helm chart for Bluesky PDS (Personal Data Server)
 
-## Install or Upgrade
+## Install
 
-Secrets must be managed during install/upgrade.
+Secrets must be created during install.
 
 REQUIRED:
 
-```
+```shell
 APPNAME="my-bsky"
 NAMESPACE="my-bsky"
 PDS_HOSTNAME="bsky.example.com"
-PDS_ADMIN_PASSWORD=$(kubectl get secret --namespace "$NAMESPACE" $APPNAME-secrets -o jsonpath="{.data.adminPassword}" 2>/dev/null | base64 -d)
-PDS_JWT_SECRET=$(kubectl get secret --namespace "$NAMESPACE" $APPNAME-secrets -o jsonpath="{.data.jwtSecret}" 2>/dev/null | base64 -d)
-PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX=$(kubectl get secret --namespace "$NAMESPACE" $APPNAME-secrets -o jsonpath="{.data.plcRotationKey}" 2>/dev/null | base64 -d)
 
-if [ -z "$PDS_ADMIN_PASSWORD" ]; then
-    export PDS_ADMIN_PASSWORD=$(openssl rand --hex 16)
-fi
-if [ -z "$PDS_JWT_SECRET" ]; then
-    export PDS_JWT_SECRET=$(openssl rand --hex 16)
-fi
-if [ -z "$PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX" ]; then
-    export PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX=$(openssl ecparam --name secp256k1 --genkey --noout --outform DER | tail --bytes=+8 | head --bytes=32 | xxd --plain --cols 32)
-fi
+PDS_ADMIN_PASSWORD=$(openssl rand --hex 16)
+PDS_JWT_SECRET=$(openssl rand --hex 16)
+PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX=$(openssl ecparam --name secp256k1 --genkey --noout --outform DER | tail --bytes=+8 | head --bytes=32 | xxd --plain --cols 32)
+
+kubectl create secret generic --namespace ${NAMESPACE} ${APPNAME}-pds \
+    --from-literal=adminPassword=${PDS_ADMIN_PASSWORD} \
+    --from-literal=jwtSecret=${PDS_JWT_SECRET} \
+    --from-literal=plcRotationKey=${PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX}
 
 helm upgrade ${APPNAME} bluesky-pds \
   --install \
   --namespace ${NAMESPACE} \
   --create-namespace \
   --set hostname=${PDS_HOSTNAME} \
-  --set secrets.adminPassword=${PDS_ADMIN_PASSWORD} \
-  --set secrets.jwtSecret=${PDS_JWT_SECRET} \
-  --set secrets.plcRotationKey=${PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX}
+  --set pds.secretsName=${APPNAME}-pds
 ```
 
 ## Usage

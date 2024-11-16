@@ -1,8 +1,4 @@
 hostname: bsky.example.org
-secrets: {}
-# adminPassword: ""
-# jwtSecret: ""
-# plcRotationKey: ""
 pds:
   replicaCount: 1
   image:
@@ -15,6 +11,7 @@ pds:
       cpu: 50m
     limits:
       memory: 256Mi
+  secretsName: ""
   pvc:
     storageClass: ""
     storageRequest: 20Gi

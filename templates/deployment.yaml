@@ -33,17 +33,17 @@ spec:
             - name: PDS_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-pds"
+                  name: "{{ .Values.pds.secretsName | default (cat .Release.Name "-pds") }}"
                   key: adminPassword
             - name: PDS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-pds"
+                  name: "{{ .Values.pds.secretsName | default (cat .Release.Name "-pds") }}"
                   key: jwtSecret
             - name: PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-pds"
+                  name: "{{ .Values.pds.secretsName | default (cat .Release.Name "-pds") }}"
                   key: plcRotationKey
           volumeMounts:
             - mountPath: /pds
@@ -64,17 +64,17 @@ spec:
             - name: PDS_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-pds"
+                  name: "{{ .Values.pds.secretsName | default (cat .Release.Name "-pds") }}"
                   key: adminPassword
             - name: PDS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-pds"
+                  name: "{{ .Values.pds.secretsName | default (cat .Release.Name "-pds") }}"
                   key: jwtSecret
             - name: PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-pds"
+                  name: "{{ .Values.pds.secretsName | default (cat .Release.Name "-pds") }}"
                   key: plcRotationKey
             # Just needs to be a dummy file which 1) exists, and 2) is harmless
             # to `source`.
